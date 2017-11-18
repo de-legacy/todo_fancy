@@ -42,10 +42,10 @@ const update = (req, res) => {
 
 const findAll = (req, res) => {
 	accountModel.find({})
-		.then(accounts => {
-			res.status(200).send(accounts)
+	.then(accounts => {
+		res.status(200).send(accounts)
 
-		}).catch(err => res.status(500).send({message: err.message}));
+	}).catch(err => res.status(500).send({message: err.message}));
 }
 
 const destroy = (req, res) => {
@@ -53,10 +53,10 @@ const destroy = (req, res) => {
 		if (err) {
 			res.status(500).send({message: err.message});
 		} else {
-			 res.status(200).send({
-			 		message: 'Account deleted',
-			 		account: accountDeleted
-			 });
+			res.status(200).send({
+				message: 'Account deleted',
+				account: accountDeleted
+			});
 		}
 
 	})
@@ -68,13 +68,9 @@ const upsertAccount = (account, req, res) => {
 	account.email = req.body.email || account.email;
 	account.facebook_id = req.body.facebook_id || account.facebook_id;
 
-		console.log('~~~~~~~~~~~~~~ ', req.body.password)
-
-	if (typeof req.body.password !== "undefined") {
+	if (typeof req.body.password !== "undefined" && req.body.password !== null) {
 		Helper.getHashedPassword(req.body.password)
 		.then(password => {
-			console.log('HASHED PASS ```', password);
-
 			account.password =  password ;
 			account.save((err, createdAcount) => {
 				if (err) {
@@ -86,7 +82,8 @@ const upsertAccount = (account, req, res) => {
 
 		}).catch(err => res.status(500).send({message: err.message}));
 	} else {
-		account.password = account.password;
+		account.password = (req.body.password === null) ? null : account.password;
+
 		account.save((err, createdAcount) => {
 			if (err) {
 				res.status(500).send({message: err.message});
@@ -97,9 +94,69 @@ const upsertAccount = (account, req, res) => {
 	}
 }
 
+const signIn = (req, res) => {
+	res.send({token: req.header.token, email: req.header.email, full_name: req.header.full_name})
+}
+
+const findByUsername = (username) => {
+	return new Promise((resolve, reject) => {
+		accountModel.findOne({ username: username })
+		.then(user => {
+			resolve(user);
+		}).catch(err => reject(err.message));
+	});
+}
+
+const findByFacebookId = (facebook_id) => {
+	return new Promise((resolve, reject) => {
+		accountModel.findOne({ facebook_id: facebook_id })
+		.then(user => {
+			resolve(user);
+		}).catch(err => reject(err));
+	});
+}
+
+const modifyAccount = (account) => {
+	return new Promise((resolve, reject) => {
+		account.username = account.username || null;
+		account.full_name =  account.full_name || null;
+		account.email = account.email || "";
+		account.facebook_id = account.facebook_id || null;
+
+		if (typeof account.password !== "undefined" && account.password !== null) {
+			Helper.getHashedPassword(req.body.password)
+			.then(password => {
+				account.password =  password ;
+				account.save((err, createdAcount) => {
+					if (err) {
+						reject(err);
+					} else {
+						resolve(createdAcount);
+					}
+				})
+
+			}).catch(err => res.status(500).send({message: err.message}));
+		} else {
+			account.password = (account.password === null) ? null : account.password;
+
+			account.save((err, createdAcount) => {
+				if (err) {
+					reject(err);
+				} else {
+					resolve(createdAcount);
+				}
+			})
+		}
+	});
+}
+
 module.exports = {
 	findAll,
 	create,
 	update,
-	destroy
+	destroy,
+	signIn,
+	findByUsername,
+	findByFacebookId,
+	modifyAccount
 }

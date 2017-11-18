@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<title>Login</title>
+</head>
+<body>
+	<div class="login-area">
+		<fb:login-button scope="public_profile,email,user_posts" onlogin="checkLoginState();">
+	</fb:login-button>
+
+	<div id="status"></div>
+	</div><!-- /.login-area -->
+</body>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="js/fbAuth.js"></script>
+</html>
