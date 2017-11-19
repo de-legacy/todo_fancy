@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 
 const todoSchema = new Schema({
 	heading: String,
-	tasks: [
+	tasklist: [
 		{
 			title: { type: String, default: '' },
 			isComplete: { type: Boolean, default: false }
@@ -14,7 +14,7 @@ const todoSchema = new Schema({
 		type: Schema.Types.ObjectId,
 		ref: 'Account',
 	},
-	editors: [
+	editorlist: [
 		{
 			type: Schema.Types.ObjectId,
 			ref: 'Account',

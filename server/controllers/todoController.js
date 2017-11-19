@@ -8,7 +8,7 @@ const create = (req, res) => {
 	let todo = new todoModel({
 		heading: req.body.heading,
 		owner: req.body.owner,
-		tasks: parseTodoResult(req.body.tasks),
+		tasklist: parseTodoResult(req.body.tasklist),
 		createdAt: new Date()
 	});
 
@@ -31,8 +31,8 @@ const update = (req, res) => {
 		todo.owner = req.body.owner;
 	}
 
-	if (typeof req.body.tasks !== 'undefined') {
-		todo.tasks = parseTodoResult(req.body.tasks);
+	if (typeof req.body.tasklist !== 'undefined') {
+		todo.tasklist = parseTodoResult(req.body.tasklist);
 	}
 
 	if (typeof req.body.editors !== 'undefined') {
@@ -61,14 +61,21 @@ const update = (req, res) => {
 	)
 }
 
-const parseTodoResult = (tasks) => {
+const parseTodoResult = (tasklist) => {
 	let arrTasks = [];
 	let parsedTaskArray = [];
 
-	if (Array.isArray(tasks) === false){
-		arrTasks.push(tasks);
+	if (Array.isArray(tasklist) === false){
+		if (tasklist.isComplete === 'false') {
+			tasklist.isComplete = false
+		} else {
+			tasklist.isComplete = true
+		}
+
+		return tasklist;
+
 	} else {
-		arrTasks = tasks;
+		arrTasks = tasklist;
 	}
 
 
