@@ -29,7 +29,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRoute);
 app.use('/api/accounts', accountRoute);
-app.use('/api/todos', todoRoute);
+app.use('/api/todo', todoRoute);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

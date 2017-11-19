@@ -3,17 +3,15 @@ const mongoose = require('mongoose').connect(url);
 const Schema = mongoose.Schema;
 
 const todoSchema = new Schema({
-	heading: String,
-	tasklist: [
-		{
-			title: { type: String, default: '' },
-			isComplete: { type: Boolean, default: false }
-		}
-	],
+	title: { type: String, default: "" },
+	category: { type: String, default: "Uncategorized" },
 	owner: {
 		type: Schema.Types.ObjectId,
 		ref: 'Account',
 	},
+	isComplete: { type: Boolean, default: false },
+	createdAt: { type: Date, default: Date.now },
+	updatedAt: { type: Date, default: null },
 	editorlist: [
 		{
 			type: Schema.Types.ObjectId,
@@ -21,8 +19,6 @@ const todoSchema = new Schema({
 			default: null
 		}
 	],
-	createdAt: { type: Date, default: Date.now },
-	updatedAt: { type: Date, default: null }
 });
 
 const TodoModel = mongoose.model('Todo', todoSchema);

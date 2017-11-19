@@ -7,6 +7,7 @@ const middleware = require('../helpers/middleware');
 router.get('/', middleware.isSignIn, function(req, res) {
 	accountController.findByFacebookId("10210058400722985")
 		.then(account => {
+			console.log(req.verifiedUser._id);
 			res.send(account);
 		}).catch(err => res.send(err.message));
 
