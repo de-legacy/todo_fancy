@@ -80,7 +80,6 @@ const signIn = (req, res, next) => {
 }
 
 const isSignIn = (req, res, next) => {
-	console.log('~~~SIGNIN', req.header('token_todo'));
 	jwt.verify(req.header('token_todo'), process.env.JWT_SECRET, (err, decoded) => {
 		console.log(decoded)
 		if (typeof decoded !== 'undefined') {
