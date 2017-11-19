@@ -14,7 +14,7 @@ const todoSchema = new Schema({
 		type: Schema.Types.ObjectId,
 		ref: 'Account',
 	},
-	editor: [
+	editors: [
 		{
 			type: Schema.Types.ObjectId,
 			ref: 'Account',
