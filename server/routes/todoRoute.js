@@ -35,6 +35,7 @@ router.post('/update/todo/:todoId/tasklist/:taskId', (req, res) => {
 	)
 
 });
-// router.delete('/delete/:accountId', middleware.isAdmin, accountController.destroy);
+
+// router.delete('/delete/:taskId', middleware.isAdmin, todoController.destroy);
 
 module.exports = router;
