@@ -10,6 +10,7 @@ const cors = require('cors');
 
 const indexRoute = require('./routes/indexRoute');
 const accountRoute = require('./routes/accountRoute');
+const todoRoute = require('./routes/todoRoute');
 
 const app = express();
 
@@ -28,6 +29,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRoute);
 app.use('/api/accounts', accountRoute);
+app.use('/api/todos', todoRoute);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

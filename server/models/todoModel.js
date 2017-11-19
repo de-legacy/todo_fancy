@@ -3,17 +3,22 @@ const mongoose = require('mongoose').connect(url);
 const Schema = mongoose.Schema;
 
 const todoSchema = new Schema({
+	heading: String,
+	tasks: [
+		{
+			title: { type: String, default: '' },
+			isComplete: { type: Boolean, default: false }
+		}
+	],
 	owner: {
 		type: Schema.Types.ObjectId,
-		ref: 'Account'
+		ref: 'Account',
 	},
-	title: String,
-	tasks: [
-	],
 	editor: [
 		{
 			type: Schema.Types.ObjectId,
-			ref: 'Account'
+			ref: 'Account',
+			default: null
 		}
 	],
 	createdAt: { type: Date, default: Date.now },
