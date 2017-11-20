@@ -12,6 +12,8 @@ const todoSchema = new Schema({
 	isComplete: { type: Boolean, default: false },
 	createdAt: { type: Date, default: Date.now },
 	updatedAt: { type: Date, default: null },
+	reminderAt: { type: Date, default: null },
+	urgency: { type: Number, default: 0},
 	editorlist: [
 		{
 			type: Schema.Types.ObjectId,

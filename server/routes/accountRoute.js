@@ -5,7 +5,7 @@ const middleware = require('../helpers/middleware');
 
 /* GET users listing. */
 router.get('/', middleware.isAdmin, accountController.findAll);
-router.post('/create', accountController.create);
+router.post('/create', middleware.isAdmin, accountController.create);
 router.put('/update/:accountId', accountController.update);
 router.delete('/delete/:accountId', middleware.isAdmin, accountController.destroy);
 

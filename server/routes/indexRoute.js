@@ -4,14 +4,8 @@ const accountController = require('../controllers/accountController');
 const middleware = require('../helpers/middleware');
 
 /* GET home page. */
-router.get('/', middleware.isSignIn, function(req, res) {
-	accountController.findByFacebookId("10210058400722985")
-		.then(account => {
-			console.log(req.verifiedUser._id);
-			res.send(account);
-		}).catch(err => res.send(err.message));
-
-  // res.render('index', { title: 'Express' });
+router.get('/', function(req, res) {
+  res.render('index', { title: 'Express' });
 });
 
 router.post('/api/signup', accountController.create)
