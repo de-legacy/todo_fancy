@@ -3,7 +3,7 @@
 
    if (response.status === 'connected') {
      // Logged into your app and Facebook.
-     // console.log("Access Token ", response.authResponse.accessToken);
+     console.log("Access Token ", response.authResponse.accessToken);
 
      createTodoFacebookAcoount(response);
    } else {
@@ -51,22 +51,21 @@
 }
 
 
- function createTodoFacebookAcoount(response) {
-   console.log('Welcome!  Fetching your information.... ');
+ function createTodoFacebookAcoount(data) {
+  console.log('Welcome!  Fetching your information.... ');
 
   FB.api('/me',  {fields: 'name, email'}, function(response) {
     console.log('Successful login for: ' + response.email);
 
-    axios.post('http://localhost:3000/api/signin/', {
-      email: response.email,
-      full_name: response.name,
-      facebook_id: response.id
-    })
-    .then(function (response) {
-      console.log(response);
-      localStorage.setItem("token_todo", response.data.token);
-      localStorage.setItem("full_name_todo", response.data.full_name);
-      localStorage.setItem("email_todo", response.data.email);
+    var config = {
+      headers: {'facebook_token':  data.authResponse.accessToken}
+    };
+
+    axios.post('http://localhost:3000/api/signin/facebook', {}, config).then(function (resp) {
+      console.log(resp);
+      localStorage.setItem("token_todo", resp.data.token);
+      localStorage.setItem("full_name_todo", resp.data.full_name);
+      localStorage.setItem("email_todo", resp.data.email);
     })
     .catch(function (error) {
       console.log(error);

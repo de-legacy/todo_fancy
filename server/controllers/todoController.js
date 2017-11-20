@@ -6,7 +6,7 @@ const create = (req, res) => {
 	let todo = new todoModel({
 		title: req.body.title,
 		category: req.body.category,
-		owner: req.verifiedUser._id,
+		owner: Helper.getVerifiedUserId(req.verifiedUser),
 		isComplete: req.body.isComplete === 'false' ? false : true,
 		createdAt: new Date(),
 		editorlist: req.body.editorlist,
@@ -22,18 +22,19 @@ const create = (req, res) => {
 }
 
 const update = (req, res) => {
-
+	console.log("~~~~~~~~~~ ",req.verifiedUser)
 	todoModel.findOne(
 		{
 			_id : ObjectId(req.params.todoId),
-			$or: [
-				{ owner: ObjectId(req.verifiedUser._id) },
+			owner: ObjectId(Helper.getVerifiedUserId(req.verifiedUser))
+			/*$or: [
+				{ owner: ObjectId(Helper.getVerifiedUserId(req.verifiedUser)) },
 				{
 					editorlist: { $in: [
-						ObjectId(req.verifiedUser._id)
+						ObjectId(Helper.getVerifiedUserId(req.verifiedUser))
 					]}
 				}
-			]
+			]*/
 		}
 	).then(todo => {
 		todo.title = req.body.title || todo.title;
@@ -59,10 +60,10 @@ const destroy = (req, res) => {
 	todoModel.findOneAndRemove({
 		_id : ObjectId(req.params.todoId),
 		$or: [
-			{ owner: ObjectId(req.verifiedUser._id) },
+			{ owner: ObjectId(Helper.getVerifiedUserId(req.verifiedUser)) },
 			{
 				editorlist: { $in: [
-					ObjectId(req.verifiedUser._id)
+					ObjectId(Helper.getVerifiedUserId(req.verifiedUser))
 				]}
 			}
 		]
@@ -81,14 +82,15 @@ const destroy = (req, res) => {
 
 const get = (req, res) => {
 	todoModel.find({
-		$or: [
-			{ owner: ObjectId(req.verifiedUser._id) },
+		owner: ObjectId(Helper.getVerifiedUserId(req.verifiedUser)),
+		/*$or: [
+			{ owner: ObjectId(Helper.getVerifiedUserId(req.verifiedUser)) },
 			{
 				editorlist: { $in: [
-					ObjectId(req.verifiedUser._id)
+					ObjectId(Helper.getVerifiedUserId(req.verifiedUser))
 				]}
 			}
-		]
+		]*/
 	}).then(todos => {
 				res.status(200).send(todos);
 			}).catch(err => res.status(401).send({message: err.message}));

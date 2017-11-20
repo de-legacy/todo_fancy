@@ -38,6 +38,14 @@ class Helper {
 			);
 		});
 	}
+
+	static getVerifiedUserId (data)  {
+		if (typeof data.id !== 'undefined' && data.id !== null) {
+			return data.id;
+		} else {
+			return data._id;
+		}
+	}
 }
 
 module.exports = Helper;

@@ -1,6 +1,27 @@
 const accountModel = require('../models/accountModel');
 const Helper = require('../helpers/helper');
 const ObjectId = require('mongodb').ObjectID;
+const FB = require('fb');
+FB.options({ version: 'v2.11' });
+
+const findByUsername = (username) => {
+	return new Promise((resolve, reject) => {
+		accountModel.findOne({ username: username })
+		.then(user => {
+			resolve(user);
+		}).catch(err => reject(err.message));
+	});
+}
+
+const findByFacebookId = (facebook_id) => {
+	return new Promise((resolve, reject) => {
+		accountModel.findOne({ facebook_id: facebook_id })
+		.then(user => {
+			resolve(user);
+		}).catch(err => reject(err));
+	});
+}
+
 
 const create = (req, res) => {
 	// Check if email exist, jika ya update data
@@ -72,11 +93,11 @@ const upsertAccount = (account, req, res) => {
 		Helper.getHashedPassword(req.body.password)
 		.then(password => {
 			account.password =  password ;
-			account.save((err, createdAcount) => {
+			account.save((err, createdAccount) => {
 				if (err) {
 					res.status(500).send({message: err.message});
 				} else {
-					res.status(200).send({message: "Account added", account: createdAcount});
+					res.status(200).send({message: "Account added", account: createdAccount});
 				}
 			})
 
@@ -84,71 +105,85 @@ const upsertAccount = (account, req, res) => {
 	} else {
 		account.password = (req.body.password === null) ? null : account.password;
 
-		account.save((err, createdAcount) => {
+		account.save((err, createdAccount) => {
 			if (err) {
 				res.status(500).send({message: err.message});
 			} else {
-				res.status(200).send({message: "Account added", account: createdAcount});
+				res.status(200).send({message: "Account added", account: createdAccount});
 			}
 		})
 	}
 }
 
 const signIn = (req, res) => {
-	res.send({token: req.header.token, email: req.header.email, full_name: req.header.full_name})
+	res.send({token: req.header.todo_token, email: req.header.email, full_name: req.header.full_name})
 }
 
-const findByUsername = (username) => {
-	return new Promise((resolve, reject) => {
-		accountModel.findOne({ username: username })
-		.then(user => {
-			resolve(user);
-		}).catch(err => reject(err.message));
-	});
-}
+const signupFacebook = (req, res) => {
+	FB.api('/me', {fields: ['id', 'name', 'email', 'cover']}, (data) => {
+		if (data) {
 
-const findByFacebookId = (facebook_id) => {
-	return new Promise((resolve, reject) => {
-		accountModel.findOne({ facebook_id: facebook_id })
-		.then(user => {
-			resolve(user);
-		}).catch(err => reject(err));
-	});
-}
+			findByFacebookId(data.id)
+				.then(account => {
+					if (account !== null && typeof account !== 'undefined') {
+						// Sign
+						Helper.signWebToken(
+						{
+							id: account.id,
+							email: account.email,
+							full_name: account.full_name,
+							facebook_id: account.facebook_id
+						}
+						).then(token => {
 
-const modifyAccount = (account) => {
-	return new Promise((resolve, reject) => {
-		account.username = account.username || null;
-		account.full_name =  account.full_name || null;
-		account.email = account.email || "";
-		account.facebook_id = account.facebook_id || null;
+							res.status(200).send({
+								message: "Success Sign In",
+								token: token,
+								email: account.email,
+								full_name: account.full_name
+							})
 
-		if (typeof account.password !== "undefined" && account.password !== null) {
-			Helper.getHashedPassword(req.body.password)
-			.then(password => {
-				account.password =  password ;
-				account.save((err, createdAcount) => {
-					if (err) {
-						reject(err);
+						}).catch(err => res.status(500).send({error: err.message}));
+
 					} else {
-						resolve(createdAcount);
+						let accountParam = {
+							email: data.email,
+							full_name: data.name,
+							facebook_id: data.id
+						};
+
+						let newAccount = new accountModel(accountParam);
+
+						newAccount.save((err, createdAccount) => {
+							if (err) {
+								res.status(401).send({message: 'Unauthorized SignUp', error: err.message});
+							} else {
+								Helper.signWebToken({
+									email: createdAccount.email,
+									full_name: createdAccount.full_name,
+									facebook_id: createdAccount.facebook_id
+								}).then(token => {
+									res.status(200).send({
+										message: "Success Sign Up",
+										token: token,
+										email: createdAccount.email,
+										full_name: createdAccount.full_name
+									})
+
+								}).catch(err => res.status(500).send({error: err.message}));
+							}
+
+						})
 					}
-				})
 
-			}).catch(err => res.status(500).send({message: err.message}));
+				}).catch(err => res.status(401).send({error: err.message}));
+
 		} else {
-			account.password = (account.password === null) ? null : account.password;
-
-			account.save((err, createdAcount) => {
-				if (err) {
-					reject(err);
-				} else {
-					resolve(createdAcount);
-				}
-			})
+			res.status(401).send({message: 'Unauthorized Login', error: err.message});
 		}
-	});
+	})
 }
+
 
 module.exports = {
 	findAll,
@@ -158,5 +193,5 @@ module.exports = {
 	signIn,
 	findByUsername,
 	findByFacebookId,
-	modifyAccount
+	signupFacebook
 }

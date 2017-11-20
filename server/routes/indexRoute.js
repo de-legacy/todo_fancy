@@ -10,5 +10,6 @@ router.get('/', function(req, res) {
 
 router.post('/api/signup', accountController.create)
 router.post('/api/signin', middleware.signIn, accountController.signIn)
+router.post('/api/signin/facebook', middleware.signinFacebook, accountController.signupFacebook)
 
 module.exports = router;
