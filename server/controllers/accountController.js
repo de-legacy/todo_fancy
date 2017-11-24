@@ -131,7 +131,7 @@ const signupFacebook = (req, res) => {
 						{
 							id: account.id,
 							email: account.email,
-							full_name: account.full_name,
+							// full_name: account.full_name,
 							facebook_id: account.facebook_id
 						}
 						).then(token => {

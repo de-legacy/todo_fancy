@@ -18,9 +18,9 @@ const signIn = (req, res, next) => {
 								_id: account._id,
 								username: account.username,
 								password: account.password,
-								full_name: account.full_name,
-								email: account.email,
-								facebook_id: account.facebook_id
+								// full_name: account.full_name,
+								// email: account.email,
+								// facebook_id: account.facebook_id
 							})
 								.then(token => {
 									req.header.todo_token = token;
