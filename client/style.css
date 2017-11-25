@@ -36,6 +36,11 @@ body {
 	transition: ease-in all 0.3s;
 }
 
+.fb-login-button {
+	background: #4267b2;
+	text-align: center;
+}
+
 .header {
 	background: #512DA8;
 	color: #fff;
