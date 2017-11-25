@@ -10,6 +10,8 @@ const create = (req, res) => {
 		isComplete: req.body.isComplete === 'false' ? false : true,
 		createdAt: new Date(),
 		editorlist: req.body.editorlist,
+		reminderAt: req.body.reminderAt,
+		urgency: req.body.urgency
 	});
 
 	todo.save((err, todo) => {
@@ -43,6 +45,8 @@ const update = (req, res) => {
 			todo.isComplete = req.body.isComplete || todo.isComplete;
 			todo.editorlist = req.body.editorlist || todo.editorlist;
 			todo.updatedAt = new Date();
+			todo.reminderAt = req.body.reminderAt || todo.reminderAt;
+			todo.urgency = req.body.urgency || todo.urgency ;
 
 			todo.save()
 				.then(savedTodo => {

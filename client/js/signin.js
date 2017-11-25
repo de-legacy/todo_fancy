@@ -1,4 +1,4 @@
-var rootEndpoint = "http://localhost:3000/api";
+// var rootEndpoint = "http://localhost:3000/api";
 
 function signUpFacebook(data) {
   console.log('Welcome!  Fetching your information.... ');
@@ -29,7 +29,7 @@ function signIn() {
   var username = document.querySelector('#signin_username').value;
   var password = document.querySelector('#signin_password').value;
 
-  alert("SIGN IN");
+  // alert("SIGN IN");
 
   axios.post(rootEndpoint+'/signin', { username: username, password: password }).then(function (resp) {
     localStorage.setItem("token_todo", resp.data.token);
