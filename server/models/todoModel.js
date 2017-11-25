@@ -1,5 +1,4 @@
-const url = 'mongodb://localhost:27017/todofancy';
-const mongoose = require('mongoose').connect(url);
+const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const todoSchema = new Schema({

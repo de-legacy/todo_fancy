@@ -1,0 +1,80 @@
+/* Utils */
+
+.u-full-width{
+	width: 100%;
+}
+
+.no-mt{
+	margin-top: 0;
+}
+
+.no-mb {
+	margin-bottom: 0;
+}
+
+/* Bootstrap Overide */
+.form-control {
+	border-radius: 0;
+}
+
+.btn {
+    border-radius: 0;
+}
+
+.btn-primary {
+	background: #4CAF50;
+	font-weight: 600;
+}
+
+/* Layout Style */
+body {
+	background: #fafafa url('images/topography.png');
+	font-family: 'Titillium Web', sans-serif;
+}
+
+*:hover {
+	transition: ease-in all 0.3s;
+}
+
+.header {
+	background: #512DA8;
+	color: #fff;
+	padding: 1rem;
+	margin-bottom: 3rem;
+}
+
+.site-title {
+	font-weight: 300;
+	margin: 0;
+	font-size: 2.5rem;
+}
+
+	.header a {
+		color: #fff;
+		text-decoration: none;
+	}
+
+	 a:hover {
+		color: #FFEB3B;
+		transition: ease-in all 0.3s;
+	}
+
+.form-area {
+	background: #fff;
+	box-shadow: 0 4px 6px rgba(0,0,0,.3);
+	padding: 2rem;
+}
+
+.form-area .input-group {
+	margin-bottom: 2rem;
+}
+
+.btn-login, .btn-register {
+    width: 100%;
+}
+
+.widget-title {
+	font-weight: 300;
+	margin-top: 0;
+	margin-bottom: 1.7rem;
+}

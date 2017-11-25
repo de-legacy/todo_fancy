@@ -1,5 +1,6 @@
 require('dotenv').config()
 
+const mongoose = require('mongoose').connect(process.env.DB_URL);
 const express = require('express');
 const path = require('path');
 const favicon = require('serve-favicon');

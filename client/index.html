@@ -1,33 +1,96 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="UTF-8" />
-	<title>Index</title>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<title>CekLis</title>
+
+	<link href="https://fonts.googleapis.com/css?family=Titillium+Web:300,400" rel="stylesheet">
+
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+	<link rel="stylesheet" href="style.css" />
+
 </head>
+
+
 <body>
-	<h1>Login Only ROUTE : Silent is Golden</h1>
+	<header class="header">
+		<h1 class="site-title text-center"><a href="#">CekWish</a></h1>
+	</header>
+	<!-- /.header -->
+
+	<div class="container">
+		<div class="row">
+			<div class="col-md-6">
+				<div class="form-area login-area">
+					<h3 class="widget-title">Sign In</h3>
+
+					<div class="login-web">
+						<form action="javascript:void(0)">
+							<div class="input-group u-full-width">
+								<label>Username</label>
+								<input class="form-control" type="signin_username" ref="signin_username" id="signin_username" name="signin_username" />
+							</div><!-- /.input-group u-full-width -->
+
+							<div class="input-group u-full-width">
+								<label>Password</label>
+								<input class="form-control" type="password" ref="signin_password" id="signin_password" name="signin_password" />
+							</div><!-- /.input-group u-full-width -->
+
+							<button class="btn btn-primary btn-form btn-login" onclick="signIn()">Sign In</button>
+						</form>
+					</div>
+
+					<hr />
+
+					<div class="fb-login-button u-full-width" onlogin="checkLoginState()" data-max-rows="1" data-size="large" data-show-faces="false" data-auto-logout-link="true" data-use-continue-as="false"></div>
+
+					<br /><br />
+					<div class="alert alert-warning" id="status"></div>
+				</div><!-- /.login-area -->
+			</div><!-- /.col-md-6 -->
+
+			<div class="col-md-6">
+				<div class="form-area register-area">
+					<h3 class="widget-title">Register</h3><!-- /.widget-title -->
+
+					<form action="javascript:void(0)">
+						<div class="input-group u-full-width">
+							<label>Your Name</label>
+							<input class="form-control" type="full_name" ref="full_name" id="full_name" name="full_name" />
+						</div><!-- /.input-group u-full-width -->
+
+						<div class="input-group u-full-width">
+							<label>Username</label>
+							<input class="form-control" type="text" ref="username" id="username" name="username" />
+						</div><!-- /.input-group u-full-width -->
+
+						<div class="input-group u-full-width">
+							<label>Password</label>
+							<input class="form-control" type="password" ref="password" id="password" name="password" />
+						</div><!-- /.input-group u-full-width -->
+
+						<div class="input-group u-full-width">
+							<label>Email</label>
+							<input class="form-control" type="email" ref="email" id="email" name="email" />
+						</div><!-- /.input-group u-full-width -->
+
+						<button class="btn btn-primary btn-form btn-register" onclick="signUp()">Register</button>
+					</form>
+				</div><!-- /.register-area -->
+			</div><!-- /.col-md-6 -->
+		</div><!-- /.row -->
+	</div><!-- /.container -->
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+	<script src="js/login-auth.js"></script>
+	<script src="js/signin.js"></script>
 </body>
-<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-<script>
-	if (localStorage.getItem('token_todo')) {
-		axios({
-			url: 'http://localhost:3000/',
-			method: 'get',
-			headers: {
-				'token_todo': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InNhaW50XzU0ZkB5YWhvby5jby5pZCIsImZ1bGxfbmFtZSI6IlNlcHRpYW4gQS4gRnVqaWFudG8iLCJmYWNlYm9va19pZCI6IjEwMjEwMDU4NDAwNzIyOTg1IiwiaWF0IjoxNTExMDI0NDY1fQ.qWGAh7NjpHKavIP4MCPsNrKG3DFEsZJTys1bLALdGTI',
-				'Content-Type': 'application/json'
-			}
-		})
-		.then(response => {
-			console.log(response)
-		})
-		.catch(err => {
-			console.log(err);
-		});
 
-
-	} else {
-		window.location.href = "http://google.com";
-	}
-</script>
 </html>
