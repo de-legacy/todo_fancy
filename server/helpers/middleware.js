@@ -64,7 +64,7 @@ const isSignIn = (req, res, next) => {
 }
 
 const isAdmin = (req, res, next) => {
-	if (req.header('admin_email') === process.env.ADMIN_EMAIL) {
+	if (req.header('admin_secret') === process.env.ADMIN_SECRET) {
 		next();
 	} else {
 		res.status(500).send({message: 'Unauthorized Accesss'});

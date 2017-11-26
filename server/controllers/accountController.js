@@ -69,6 +69,21 @@ const findAll = (req, res) => {
 	}).catch(err => res.status(500).send({message: err.message}));
 }
 
+const findAllLimited = (req, res) => {
+	let accountProjection = {
+		password: false,
+		facebook_id: false,
+		createdAt: false,
+		__v : false,
+	}
+
+	accountModel.find({}, accountProjection)
+	.then(accounts => {
+		res.status(200).send(accounts)
+
+	}).catch(err => res.status(500).send({message: err.message}));
+}
+
 const destroy = (req, res) => {
 	accountModel.findByIdAndRemove(ObjectId(req.params.accountId), (err, accountDeleted) => {
 		if (err) {
@@ -191,6 +206,7 @@ module.exports = {
 	update,
 	destroy,
 	signIn,
+	findAllLimited,
 	findByUsername,
 	findByFacebookId,
 	signupFacebook

@@ -106,7 +106,7 @@ Create new Account for admin only.
 
 | Parameters | Type | Required | Description |
 |:---------:|:----:|:--------:|:-----------:|
-| admin_email | string | Required | Admin email Address|
+| admin_secret | string | Required | Admin secret key|
 
 **Example Response**
 
@@ -177,7 +177,7 @@ Delete a single Account.
 
 | Parameters | Type | Required | Description |
 |:---------:|:----:|:--------:|:-----------:|
-| admin_email | string | Required | Admin email Address|
+| admin_secret | string | Required | Admin secret key|
 
 **Example Response**
 
