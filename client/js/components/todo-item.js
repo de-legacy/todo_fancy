@@ -5,7 +5,7 @@ let todoItem = Vue.component('todo-item', {
 			<label v-bind:for="item._id" v-bind:class="isCompleteClass()">{{ item.title }}</label>
 
 			<span class="todo-modify">
-				<a href="javascript:void(0)" @click="editTask()" class="modify-menu task-edit"><i class="fa fa-cog"></i></a>
+				<a href="javascript:void(0)" @click="editTask()" class="modify-menu task-edit"><i class="fa fa-pencil"></i></a>
 				<a href="javascript:void(0)" @click="deleteTask()" class="modify-menu task-delete"><i class="fa fa-trash"></i></a>
 			</span>
 		</div>

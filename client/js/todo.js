@@ -52,6 +52,7 @@ var app = new Vue({
 		full_name : '',
 		token: '',
 		tasks: [],
+		users: [],
 		message: '',
 		show_snackbar: ''
 	},
@@ -65,8 +66,15 @@ var app = new Vue({
 		getAllTasks() {
 			axios.get(rootEndpoint+'/todo', { headers: { token_todo: this.token } })
 			.then(({data}) => {
-				console.log(data)
 				this.tasks = data
+
+			}).catch(err => console.log(err.message));
+		},
+
+		getAllUsers() {
+			axios.get(rootEndpoint+'/accounts/user', { headers: { token_todo: this.token } })
+			.then(({data}) => {
+				this.users = data
 
 			}).catch(err => console.log(err.message));
 		},
@@ -152,6 +160,14 @@ var app = new Vue({
 		  			<label>Reminder At</label>
 		  			<input class="form-control" type="datetime-local" ref="task_reminderat" id="task_reminderat" name="task_reminderat" value="${item !== null && item.reminderAt !== null &&  typeof item.reminderAt !== 'undefined' ? item.reminderAt : ''}"/>
 		  		</div>
+
+	  			<div class="input-group u-full-width">
+		  			<label>Editor</label>
+
+		  			<select name="task_editorlist" id="task_editorlist" class="form-control" multiple>
+								v-html="${this.getUserList()}"
+		  			</select>
+		  		</div>
 		  	</form>
 		  `;
 
@@ -160,6 +176,7 @@ var app = new Vue({
 			// add a button
 			modalNewTask.addFooterBtn('Add Task', 'tingle-btn tingle-btn--primary', () => {
 				var reminderTime = document.querySelector("#task_reminderat").value;
+				var editorList = this.getSelectValues(document.getElementById("task_editorlist"));
 
 				let data = {
 					title: document.querySelector("#task_title").value,
@@ -167,6 +184,7 @@ var app = new Vue({
 					isComplete: document.querySelector("#task_status").value,
 					urgency: document.querySelector("#task_urgency").value,
 					reminderAt: reminderTime !== '' ? reminderTime : '',
+					editorlist : editorList
 				}
 
 				if (payload !== null && typeof payload !== "undefined") {
@@ -178,6 +196,7 @@ var app = new Vue({
 						this.upsertTask(data, 'edit', payload.index);
 					}
 				} else {
+
 					this.upsertTask(data)
 				}
 
@@ -190,6 +209,27 @@ var app = new Vue({
 			});
 
 			modalNewTask.open();
+		},
+
+		getSelectValues(select) {
+			var result = [];
+			var options = select && select.options;
+			var opt;
+
+			for (var i=0, iLen=options.length; i<iLen; i++) {
+				opt = options[i];
+
+				if (opt.selected) {
+					result.push(opt.value || opt.text);
+				}
+			}
+			return result;
+		},
+
+		getUserList() {
+			return this.users.map((user, index) => {
+				return `<option value="${user._id}">${user.full_name}</option>`;
+			})
 		},
 
 		showProfileModal() {
@@ -286,5 +326,6 @@ var app = new Vue({
 		this.full_name = localStorage.getItem('full_name_todo');
 		this.token = localStorage.getItem('token_todo');
 		this.getAllTasks();
+		this.getAllUsers();
 	}
 })
