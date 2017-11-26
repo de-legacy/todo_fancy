@@ -7,9 +7,14 @@ let mainHeader = Vue.component('main-header', {
 						<h1 class="site-title"><a href="index.html"><i class="fa fa-magic"></i> CekWiz</a></h1>
 					</div>
 
-					<div class="col-md-10 col-sm-12 text-right">
-						<nav class="todo-menu">
+					<div class="col-md-10 col-sm-12">
+						<nav class="todo-menu text-right">
 							<ul>
+								<li>
+									<form action="javascript:void(0)">
+										<input type="text" class="form-control" id="search_task" name="search_task" ref="search_task" @keyup="getSearch()" placeholder="Search Task"/>
+									</form>
+								</li>
 								<li>Welcome, <span id="user-name">{{ full_name }}</span></li>
 								<li><a id="new-task" @click="showNewTaskModal()" href="javascript:void(0)" title="New Task"><i class="fa fa-plus-circle"></i> New Task</a></li>
 								<li><a @click="showProfileModal()" href="javascript:void(0)" title="Profile"><i class="fa fa-user"></i> Profile</a></li>
@@ -23,6 +28,10 @@ let mainHeader = Vue.component('main-header', {
 	`,
 	props: ['full_name'],
 	methods: {
+		getSearch(){
+			this.$emit('search-change', this.$refs.search_task.value)
+		},
+
 		showNewTaskModal() {
 			this.$emit('show-task-modal');
 		},

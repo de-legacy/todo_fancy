@@ -54,7 +54,8 @@ var app = new Vue({
 		tasks: [],
 		users: [],
 		message: '',
-		show_snackbar: ''
+		show_snackbar: '',
+		initTasks: []
 	},
 
 	methods: {
@@ -67,7 +68,7 @@ var app = new Vue({
 			axios.get(rootEndpoint+'/todo', { headers: { token_todo: this.token } })
 			.then(({data}) => {
 				this.tasks = data
-
+				this.initTasks = data;
 			}).catch(err => console.log(err.message));
 		},
 
@@ -77,6 +78,22 @@ var app = new Vue({
 				this.users = data
 
 			}).catch(err => console.log(err.message));
+		},
+
+		filterTasks(payload) {
+			console.log(payload);
+
+			if (payload.length <= 1) {
+				this.tasks = this.initTasks;
+			} else {
+
+				var filtered = this.tasks.filter((task) => {
+					var regex = new RegExp(payload, 'i');
+					return task.title.match(regex) ;
+				} );
+
+				this.tasks = filtered;
+			}
 		},
 
 		upsertTask(newTodo = null, type = "create", index = null) {
