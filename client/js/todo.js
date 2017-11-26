@@ -52,9 +52,16 @@ var app = new Vue({
 		full_name : '',
 		token: '',
 		tasks: [],
+		message: '',
+		show_snackbar: ''
 	},
 
 	methods: {
+		xdebug(data = null) {
+			console.log('~~~~~~~xdebug ', data);
+			return data;
+		},
+
 		getAllTasks() {
 			axios.get(rootEndpoint+'/todo', { headers: { token_todo: this.token } })
 			.then(({data}) => {
@@ -64,7 +71,30 @@ var app = new Vue({
 			}).catch(err => console.log(err.message));
 		},
 
-		showNewTaskModal() {
+		upsertTask(newTodo = null, type = "create") {
+			if (newTodo !== null) {
+				if (type === "create") {
+					axios.post(rootEndpoint+'/todo/add', newTodo, { headers: { token_todo: this.token } })
+						.then(({data}) => {
+							this.tasks.push(newTodo)
+
+						}).catch(err => console.log(err.message));
+
+				} if (type === "checked") {
+					console.log('~~~ Checked: ', newTodo.isComplete)
+
+					axios.put(`${rootEndpoint}/todo/edit/${newTodo._id}`, { isComplete : newTodo.isComplete.toString() }, { headers: { token_todo: this.token } })
+						.then(({data}) => {
+							console.log('Update checked item: ', data);
+
+						}).catch(err => console.log(err.message));
+
+				}
+			}
+		},
+
+
+		showNewTaskModal(item = null) {
 			var modalNewTask = new tingle.modal({
 				footer: true,
 				stickyFooter: false,
@@ -82,20 +112,17 @@ var app = new Vue({
 		  		</div>
 
 		  		<div class="input-group u-full-width">
-		  			<label>Category</label>
-		  			<input class="form-control" type="text" ref="task_category" id="task_category" name="task_category" />
+		  			<label>Task Status</label>
+
+		  			<select name="task_status" id="task_status" class="form-control">
+		  				<option value="false">Incomplete</option>
+		  				<option value="true">Complete</option>
+		  			</select>
 		  		</div>
 
-		  		<div class="input-group u-full-width">
-		  			<span class="radio-item">
-		  				<input type="radio" name="task_iscomplete" id="task_unfinished" ref="task_iscomplete" value="false" checked>
-		  				<label for="task_unfinished">Incomplete</label>
-		  			</span>
-
-		  			<span class="radio-item">
-		  				<input type="radio" name="task_iscomplete" id="task_finished" ref="task_iscomplete" value="true">
-		  				<label for="task_finished">Complete</label>
-		  			</span>
+	  			<div class="input-group u-full-width">
+		  			<label>Category</label>
+		  			<input class="form-control" type="text" ref="task_category" id="task_category" name="task_category" />
 		  		</div>
 
 		  		<div class="input-group u-full-width">
@@ -105,7 +132,7 @@ var app = new Vue({
 
 		  		<div class="input-group u-full-width">
 		  			<label>Reminder At</label>
-		  			<input class="form-control" type="datetime-local" ref="task_urgency" id="task_urgency" name="task_urgency" />
+		  			<input class="form-control" type="datetime-local" ref="task_reminderat" id="task_reminderat" name="task_reminderat" />
 		  		</div>
 		  	</form>
 		  `;
@@ -113,7 +140,19 @@ var app = new Vue({
 			modalNewTask.setContent(newTaskForm);
 
 			// add a button
-			modalNewTask.addFooterBtn('Add Task', 'tingle-btn tingle-btn--primary', function() {
+			modalNewTask.addFooterBtn('Add Task', 'tingle-btn tingle-btn--primary', () => {
+				var reminderTime = document.querySelector("#task_reminderat").value;
+
+				let data = {
+					title: document.querySelector("#task_title").value,
+					category: document.querySelector("#task_category").value,
+					isComplete: document.querySelector("#task_status").value,
+					urgency: document.querySelector("#task_urgency").value,
+					reminderAt: reminderTime !== '' ? new Date(reminderTime).toISOString() : '',
+				}
+
+
+				this.upsertTask(data);
 		    modalNewTask.close();
 			});
 
@@ -174,6 +213,44 @@ var app = new Vue({
 
 			modalProfile.open();
 		},
+
+		modifyTask(payload) {
+			let taskIndex = payload.index;
+			let taskTarget = payload.task;
+
+			if (payload.type === "delete") {
+				this.message = `${payload.task.title} Removed`;
+				this.show_snackbar = 'show';
+
+				axios.delete(`${rootEndpoint}/todo/delete/${payload.task._id}`, { headers: { token_todo: this.token } })
+				.then(({data}) => {
+					console.log(data)
+					this.tasks.splice(taskIndex, 1);
+
+				}).catch(err => console.log(err.message));
+
+			} else if (payload.type === "checked") {
+				this.tasks[taskIndex].isComplete = this.tasks[taskIndex].isComplete === false ? true : false;
+
+				let data = {
+					_id : payload.task._id,
+					isComplete: this.tasks[taskIndex].isComplete,
+				}
+
+				console.log(data);
+
+				this.upsertTask(data, 'checked')
+
+			} else if (payload.type === "edit") {
+				this.message = `${payload.task.title} Edited`;
+				this.show_snackbar = 'show';
+			}
+		},
+
+		displaySnackbar(payload) {
+			this.show_snackbar = payload;
+			this.message = "";
+		}
 	},
 
 	created() {

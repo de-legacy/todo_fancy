@@ -29,7 +29,9 @@
 
 		</main-header>
 
-		<main-content :tasklist="tasks"></main-content>
+		<main-content :tasklist="tasks" @do-modify-task="modifyTask"></main-content>
+
+		<snack-bar :content="this.message" :show_snackbar="this.show_snackbar" @do-snackbar-display="displaySnackbar"></snack-bar>
 	</div>
 	<!-- /#app -->
 
@@ -42,6 +44,7 @@
 	<script src="js/components/main-header.js"></script>
 	<script src="js/components/main-content.js"></script>
 	<script src="js/components/todo-item.js"></script>
+	<script src="js/components/snack-bar.js"></script>
 
 	<script src="js/todo.js"></script>
 </body>
