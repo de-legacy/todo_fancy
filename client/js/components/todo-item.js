@@ -1,7 +1,7 @@
 let todoItem = Vue.component('todo-item', {
 	template: `
-		<div class="todo-item">
-			<input @click="checklistTask()" class="todo-check" type="checkbox" name="isComplete" v-bind:id="item._id" v-bind:ref="item._id" value="true" v-bind:checked="isCompleteChecked()">
+		<div v-bind:class="getUrgencyClass()"">
+			<input @click="checklistTask()" class="todo-check" type="checkbox" name="isComplete" v-bind:id="item._id" v-bind:ref="item._id" value="true" v-model="item.isComplete">
 			<label v-bind:for="item._id" v-bind:class="isCompleteClass()">{{ item.title }}</label>
 
 			<span class="todo-modify">
@@ -13,24 +13,43 @@ let todoItem = Vue.component('todo-item', {
 	props: ['item', 'index'],
 	data(){
 		return {
-			task : ''
+			task : '',
+			checked : false,
 		}
 	},
 
 	methods: {
 		isCompleteChecked() {
-			if (this.task.isComplete === true || this.task.isComplete === "true") {
-				return 'checked';
+			if (this.item.isComplete === true || this.item.isComplete === "true") {
+				this.checked = true;
 			}	else {
-				return '';
+				this.checked = false;
 			}
 		},
 
 		isCompleteClass() {
-			if (this.task.isComplete === true || this.task.isComplete === "true") {
+			if (this.item.isComplete === true || this.item.isComplete === "true") {
 				return 'todo-title done-item';
 			}	else {
 				return 'todo-title';
+			}
+		},
+
+		getUrgencyClass() {
+			if (this.item.urgency !== null) {
+				if (this.item.urgency > 7) {
+					return 'todo-item level-danger'
+				}
+
+				if (this.item.urgency >= 4) {
+					return 'todo-item level-warning'
+				}
+
+				if (this.item.urgency  < 4) {
+					return 'todo-item level-ok'
+				}
+			} else {
+				return 'todo-item';
 			}
 		},
 
@@ -49,6 +68,6 @@ let todoItem = Vue.component('todo-item', {
 	},
 
 	created() {
-		this.task = this.item;
+		// this.task = this.item;
 	}
 })

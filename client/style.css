@@ -123,6 +123,26 @@ a:hover {
 	padding: 0.5rem 0;
 }
 
+.todo-item:before {
+	position: absolute;
+	content: " ";
+	width: 3px;
+	height: 20px;
+	// background: #ddd;
+}
+
+.todo-item.level-warning:before {
+	background: #FFC107;
+}
+
+.todo-item.level-danger:before {
+	background: #E64A19;
+}
+
+.todo-item.level-ok:before {
+	background: #388E3C;
+}
+
 .todo-modify {
 	opacity: 0;
 	position: absolute;

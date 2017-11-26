@@ -71,30 +71,48 @@ var app = new Vue({
 			}).catch(err => console.log(err.message));
 		},
 
-		upsertTask(newTodo = null, type = "create") {
+		upsertTask(newTodo = null, type = "create", index = null) {
 			if (newTodo !== null) {
 				if (type === "create") {
+					console.log(newTodo.reminderAt);
 					axios.post(rootEndpoint+'/todo/add', newTodo, { headers: { token_todo: this.token } })
 						.then(({data}) => {
 							this.tasks.push(newTodo)
 
 						}).catch(err => console.log(err.message));
 
-				} if (type === "checked") {
-					console.log('~~~ Checked: ', newTodo.isComplete)
+				}
 
+				if (type === "checked") {
 					axios.put(`${rootEndpoint}/todo/edit/${newTodo._id}`, { isComplete : newTodo.isComplete.toString() }, { headers: { token_todo: this.token } })
 						.then(({data}) => {
 							console.log('Update checked item: ', data);
 
 						}).catch(err => console.log(err.message));
+				}
 
+				if (type === "edit") {
+					let editData = {
+						title: newTodo.title,
+						isComplete : newTodo.isComplete.toString(),
+						category: newTodo.category,
+						urgency: newTodo.urgency,
+						reminderAt: newTodo.reminderAt
+					};
+
+					axios.put(`${rootEndpoint}/todo/edit/${newTodo._id}`, editData, { headers: { token_todo: this.token } })
+						.then(({data}) => {
+							console.log('Update edited item: ', data);
+							if (index !== null) {
+								this.tasks.splice(index, 1, data.data);
+							}
+						}).catch(err => console.log(err.message));
 				}
 			}
 		},
 
 
-		showNewTaskModal(item = null) {
+		showTaskModal(item = null, payload) {
 			var modalNewTask = new tingle.modal({
 				footer: true,
 				stickyFooter: false,
@@ -108,7 +126,7 @@ var app = new Vue({
 		  	<form action="javascript:void(0)">
 		  		<div class="input-group u-full-width">
 		  			<label>Title</label>
-		  			<input class="form-control" type="text" ref="task_title" id="task_title" name="task_title" />
+		  			<input class="form-control" type="text" ref="task_title" id="task_title" name="task_title" value="${item !== null && item.title !== null &&  typeof item.title !== 'undefined' ? item.title : ''}"/>
 		  		</div>
 
 		  		<div class="input-group u-full-width">
@@ -122,17 +140,17 @@ var app = new Vue({
 
 	  			<div class="input-group u-full-width">
 		  			<label>Category</label>
-		  			<input class="form-control" type="text" ref="task_category" id="task_category" name="task_category" />
+		  			<input class="form-control" type="text" ref="task_category" id="task_category" name="task_category" value="${item !== null && item.category !== null &&  typeof item.category !== 'undefined' ? item.category : ''}"/>
 		  		</div>
 
 		  		<div class="input-group u-full-width">
 		  			<label>Urgency</label>
-		  			<input class="form-control" type="number" step="1" min="0" max="10" ref="task_urgency" id="task_urgency" name="task_urgency" />
+		  			<input class="form-control" type="number" step="1" min="0" max="10" ref="task_urgency" id="task_urgency" name="task_urgency" value="${item !== null && item.urgency !== null &&  typeof item.urgency !== 'undefined' ? item.urgency : ''}"/>
 		  		</div>
 
 		  		<div class="input-group u-full-width">
 		  			<label>Reminder At</label>
-		  			<input class="form-control" type="datetime-local" ref="task_reminderat" id="task_reminderat" name="task_reminderat" />
+		  			<input class="form-control" type="datetime-local" ref="task_reminderat" id="task_reminderat" name="task_reminderat" value="${item !== null && item.reminderAt !== null &&  typeof item.reminderAt !== 'undefined' ? item.reminderAt : ''}"/>
 		  		</div>
 		  	</form>
 		  `;
@@ -148,11 +166,21 @@ var app = new Vue({
 					category: document.querySelector("#task_category").value,
 					isComplete: document.querySelector("#task_status").value,
 					urgency: document.querySelector("#task_urgency").value,
-					reminderAt: reminderTime !== '' ? new Date(reminderTime).toISOString() : '',
+					reminderAt: reminderTime !== '' ? reminderTime : '',
 				}
 
+				if (payload !== null && typeof payload !== "undefined") {
+					if (payload.type === "edit") {
+						data._id = item._id;
+						data.isComplete = data.isComplete === 'false' ? false : true;
 
-				this.upsertTask(data);
+						this.tasks.splice(payload.index, 1, data);
+						this.upsertTask(data, 'edit', payload.index);
+					}
+				} else {
+					this.upsertTask(data)
+				}
+
 		    modalNewTask.close();
 			});
 
@@ -237,13 +265,14 @@ var app = new Vue({
 					isComplete: this.tasks[taskIndex].isComplete,
 				}
 
-				console.log(data);
-
 				this.upsertTask(data, 'checked')
 
 			} else if (payload.type === "edit") {
-				this.message = `${payload.task.title} Edited`;
-				this.show_snackbar = 'show';
+				console.log('~~~EDIT JIG ', payload);
+				let data = payload.task;
+				data._id = payload.task._id;
+
+				this.showTaskModal(data, payload);
 			}
 		},
 
