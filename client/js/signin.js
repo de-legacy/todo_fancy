@@ -13,6 +13,7 @@ function signUpFacebook(data) {
     axios.post(rootEndpoint+'/signin/facebook', {}, config).then(function (resp) {
       localStorage.setItem("token_todo", resp.data.token);
       localStorage.setItem("full_name_todo", resp.data.full_name);
+      localStorage.setItem("user_id_todo", resp.data.id);
       localStorage.setItem("email_todo", resp.data.email);
       localStorage.setItem("login_type", "facebook");
 
@@ -36,6 +37,7 @@ function signIn() {
     localStorage.setItem("full_name_todo", resp.data.full_name);
     localStorage.setItem("email_todo", resp.data.email);
     localStorage.setItem("login_type", "regular");
+    localStorage.setItem("user_id_todo", resp.data.id);
 
     window.location.href = "todo.html";
 

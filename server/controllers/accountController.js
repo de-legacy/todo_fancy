@@ -131,7 +131,7 @@ const upsertAccount = (account, req, res) => {
 }
 
 const signIn = (req, res) => {
-	res.send({token: req.header.todo_token, email: req.header.email, full_name: req.header.full_name})
+	res.send({id: req.header._id = account._id, token: req.header.todo_token, email: req.header.email, full_name: req.header.full_name})
 }
 
 const signupFacebook = (req, res) => {
@@ -153,6 +153,7 @@ const signupFacebook = (req, res) => {
 
 							res.status(200).send({
 								message: "Success Sign In",
+								id: account.id,
 								token: token,
 								email: account.email,
 								full_name: account.full_name

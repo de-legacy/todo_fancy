@@ -25,7 +25,9 @@ const signIn = (req, res, next) => {
 								.then(token => {
 									req.header.todo_token = token;
   								req.header.email = account.email;
-  								req.header.full_name = account.full_name
+  								req.header.full_name = account.full_name;
+  								req.header._id = account._id;
+
 									next();
 
 								}).catch(err => res.status(401).send({message: "Unauthorized User", error: err.message}));
