@@ -88,7 +88,6 @@ var app = new Vue({
 			if (payload.length <= 1) {
 				this.tasks = this.initTasks;
 			} else {
-
 				var filtered = this.tasks.filter((task) => {
 					var regex = new RegExp(payload, 'i');
 					return task.title.match(regex) ;
@@ -101,10 +100,12 @@ var app = new Vue({
 		upsertTask(newTodo = null, type = "create", index = null) {
 			if (newTodo !== null) {
 				if (type === "create") {
-					console.log(newTodo.reminderAt);
+
 					axios.post(rootEndpoint+'/todo/add', newTodo, { headers: { token_todo: this.token } })
 						.then(({data}) => {
-							this.tasks.push(newTodo)
+							console.log(data);
+
+							this.tasks.push(data.todo);
 
 						}).catch(err => console.log(err.message));
 
@@ -317,7 +318,6 @@ var app = new Vue({
 				this.upsertTask(data, 'checked')
 
 			} else if (payload.type === "edit") {
-				console.log('~~~EDIT JIG ', payload);
 				let data = payload.task;
 				data._id = payload.task._id;
 
