@@ -1,4 +1,4 @@
- var rootEndpoint = 'http://localhost:3001/api';
+ var rootEndpoint = 'http://35.186.144.106:3001/api';
 
  // This is called with the results from from FB.getLoginStatus().
  function statusChangeCallback(response) {

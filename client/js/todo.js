@@ -1,4 +1,4 @@
-const rootUrl = "http://localhost:3001/";
+const rootUrl = "http://35.186.144.106:3001/";
 
 function signOut() {
 	if (localStorage.getItem("login_type") === "facebook") {
