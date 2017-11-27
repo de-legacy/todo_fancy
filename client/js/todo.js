@@ -1,4 +1,3 @@
-// const rootEndpoint = 'http://localhost:3000/api/';
 const rootUrl = "http://localhost:3001/";
 
 function signOut() {
