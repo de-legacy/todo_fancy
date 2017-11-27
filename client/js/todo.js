@@ -1,4 +1,5 @@
 // const rootEndpoint = 'http://localhost:3000/api/';
+const rootUrl = "http://localhost:3001/";
 
 function signOut() {
 	if (localStorage.getItem("login_type") === "facebook") {
@@ -24,7 +25,7 @@ function clearLocalStorage() {
 function isSignin() {
 	if (localStorage.getItem('token_todo')) {
 		axios({
-			url: 'http://localhost:3000/',
+			url: rootUrl,
 			method: 'get',
 			headers: {
 				'token_todo': localStorage.getItem('token_todo'),
@@ -50,6 +51,7 @@ var app = new Vue({
 	el: '#app',
 	data: {
 		full_name : '',
+		email: '',
 		token: '',
 		tasks: [],
 		users: [],
@@ -263,23 +265,13 @@ var app = new Vue({
 			  <form action="javascript:void(0)">
 			  	<div class="input-group u-full-width">
 			  		<label>Your Name</label>
-			  		<input class="form-control" type="full_name" ref="full_name" id="full_name" name="full_name" />
-			  	</div><!-- /.input-group u-full-width -->
-
-			  	<div class="input-group u-full-width">
-			  		<label>Username</label>
-			  		<input class="form-control" type="text" ref="username" id="username" name="username" />
-			  	</div><!-- /.input-group u-full-width -->
-
-			  	<div class="input-group u-full-width">
-			  		<label>Password</label>
-			  		<input class="form-control" type="password" ref="password" id="password" name="password" />
-			  	</div><!-- /.input-group u-full-width -->
+			  		<input class="form-control" type="full_name" ref="full_name" id="full_name" name="full_name" value="${this.full_name}" disabled/>
+			  	</div>
 
 			  	<div class="input-group u-full-width">
 			  		<label>Email</label>
-			  		<input class="form-control" type="email" ref="email" id="email" name="email" />
-			  	</div><!-- /.input-group u-full-width -->
+			  		<input class="form-control" type="email" ref="email" id="email" name="email" value="${this.email}" disabled/>
+			  	</div>
 
 			  </form>
 		  `;
@@ -287,12 +279,12 @@ var app = new Vue({
 			modalProfile.setContent(profileContent);
 
 			// add a button
-			modalProfile.addFooterBtn('Save', 'tingle-btn tingle-btn--primary', function() {
-		    modalProfile.close();
-			});
+			// modalProfile.addFooterBtn('Save', 'tingle-btn tingle-btn--primary', function() {
+		 //    modalProfile.close();
+			// });
 
 			// add another button
-			modalProfile.addFooterBtn('Cancel', 'tingle-btn tingle-btn--danger', function() {
+			modalProfile.addFooterBtn('Close', 'tingle-btn tingle-btn--danger', function() {
 				modalProfile.close();
 			});
 
@@ -341,6 +333,7 @@ var app = new Vue({
 
 	created() {
 		this.full_name = localStorage.getItem('full_name_todo');
+		this.email= localStorage.getItem('email_todo');
 		this.token = localStorage.getItem('token_todo');
 		this.getAllTasks();
 		this.getAllUsers();
